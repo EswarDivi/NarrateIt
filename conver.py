@@ -34,7 +34,7 @@ class URLToAudioConverter:
             messages=[
                 {
                     "role": "user",
-                    "content": f"{text} \n Convert the text as Concise Conversation between two people as Podcast.\nfollowing this template \n {self.template}",
+                    "content": f"{text} \n Convert the text as Elaborate Conversation between two people as Podcast.\nfollowing this template \n {self.template}",
                 }
             ],
             model="mixtral-8x7b-32768",
@@ -74,13 +74,8 @@ class URLToAudioConverter:
     def url_to_audio(self, url):
         text = self.fetch_text(url)
         if len(text.split()) > 3000:
-            parts = text[:len(text)//2], text[len(text)//2:]
-            conversations = [self.extract_conversation(part) for part in parts]
-            conversation_json = json.dumps({
-                "conversation": [json.loads(convo)["conversation"] for convo in conversations]
-            })
-        else:
-            conversation_json = self.extract_conversation(text)
+            text = ' '.join(text.split()[:3000])
+        conversation_json = self.extract_conversation(text)
         audio_files, folder_name = self.text_to_speech(conversation_json)
         final_output = os.path.join(folder_name, "combined_output.wav")
         self.combine_audio_files(audio_files, final_output)
