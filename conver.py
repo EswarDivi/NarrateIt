@@ -26,7 +26,7 @@ class URLToAudioConverter:
     def fetch_text(self, url):
         prefix_url = "https://r.jina.ai/"
         url = prefix_url + url
-        response = httpx.get(url, timeout=10.0)
+        response = httpx.get(url, timeout=25.0)
         return response.text
 
     def extract_conversation(self, text):
