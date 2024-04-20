@@ -1,11 +1,9 @@
 import streamlit as st
 from conver import URLToAudioConverter
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
-groq_api_key = os.getenv("GROQ_API_KEY")
-dg_api_key = os.getenv("DG_API_KEY")
+groq_api_key = st.secrets["GROQ_API_KEY"]
+dg_api_key = st.secrets["DG_API_KEY"]
 
 converter = URLToAudioConverter(groq_api_key, dg_api_key)
 
