@@ -1,0 +1,5 @@
+httpx
+groq
+deepgram-sdk
+streamlit
+python-dotenv
