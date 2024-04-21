@@ -8,8 +8,8 @@ dg_api_key = st.secrets["DG_API_KEY"]
 converter = URLToAudioConverter(groq_api_key, dg_api_key)
 
 st.set_page_config(page_title="NarrateLink", layout="wide")
-st.title("NarrateLink: Turn Any Article into Audio")
-st.subheader("Easily convert articles from URLs into listenable audio formats.")
+st.title("NarrateLink: Turn Any Article into Podcast")
+st.subheader("Easily convert articles from URLs into listenable audio Podcast.")
 
 
 st.write("## Enter Article URL")
