@@ -37,7 +37,7 @@ class URLToAudioConverter:
                     "content": f"{text} \n Convert the text as Elaborate Conversation between two people as Podcast.\nfollowing this template \n {self.template}",
                 }
             ],
-            model="llama3-8b-8192",
+            model="mixtral-8x7b-32768",
         )
         pattern = r"\{(?:[^{}]|(?:\{[^{}]*\}))*\}"
         json_match = re.search(pattern, chat_completion.choices[0].message.content)
