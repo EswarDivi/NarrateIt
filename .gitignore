@@ -8,3 +8,4 @@
 /WuzMhVOIXWY=
 .env
 main.ipynb
+.streamlit/secrets.toml
