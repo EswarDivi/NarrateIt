@@ -73,5 +73,5 @@ st.info(
     "Powered by Groq and Deepgram APIs. URLs are parsed by https://r.jina.ai/. Ensure your URLs are accessible and point to text-rich content for best results."
 )
 st.info(
-    "Note: If the article exceeds 8000 words, it will be truncated to ensure optimal performance and manageability."
+    "Note: If the article exceeds 5000 words, it will be truncated to ensure optimal performance and manageability."
 )

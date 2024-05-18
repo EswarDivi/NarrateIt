@@ -74,8 +74,8 @@ class URLToAudioConverter:
 
     def url_to_audio(self, url,voice_1,voice_2):
         text = self.fetch_text(url)
-        if len(text.split()) > 8000:
-            text = " ".join(text.split()[:8000])
+        if len(text.split()) > 5000:
+            text = " ".join(text.split()[:5000])
         conversation_json = self.extract_conversation(text)
         audio_files, folder_name = self.text_to_speech(conversation_json,voice_1,voice_2)
         final_output = os.path.join(folder_name, "combined_output.wav")
