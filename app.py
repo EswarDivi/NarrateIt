@@ -69,6 +69,14 @@ else:
     if convert_button:
         st.error("Please enter a valid URL.")
 
+st.markdown(
+    """
+    ### Looking for a fully open-source and on-device solution?
+    Try out [Podcastify](https://huggingface.co/spaces/eswardivi/Podcastify)! 
+    It's another app by me that lets you convert articles to podcasts right on your device. No external APIs, just pure open-source goodness!
+    """
+)
+
 st.info(
     "Powered by Groq and Deepgram APIs. URLs are parsed by https://r.jina.ai/. Ensure your URLs are accessible and point to text-rich content for best results."
 )
