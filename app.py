@@ -65,6 +65,12 @@ if convert_button and url:
             )
         except Exception as e:
             st.error(f"An error occurred: {e}")
+            st.markdown(
+                    """
+                    ### Encountering issues?
+                    If there are any errors, please try using [Podcastify](https://huggingface.co/spaces/eswardivi/Podcastify) for an alternative solution.
+                    """
+                )
 else:
     if convert_button:
         st.error("Please enter a valid URL.")
