@@ -1,5 +1,9 @@
 httpx
-groq
-deepgram-sdk
+openai 
+edge-tts==7.0.0
 streamlit
 python-dotenv
+logfire
+logfire[requests]
+logfire[httpx]
+logfire[system-metrics]

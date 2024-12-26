@@ -1,91 +1,124 @@
 import streamlit as st
+import conver
 from conver import URLToAudioConverter
-import os
+from dataclasses import dataclass
 
-groq_api_key = st.secrets["GROQ_API_KEY"]
-dg_api_key = st.secrets["DG_API_KEY"]
-
-converter = URLToAudioConverter(groq_api_key, dg_api_key)
-
-st.set_page_config(page_title="NarrateLink", page_icon="🔊", layout="centered")
-st.title("NarrateLink: Turn Any Article into a Podcast")
-st.subheader("Easily convert articles from URLs into listenable audio Podcasts.")
-
-st.write("## Enter Article URL")
-url = st.text_input("URL Input", placeholder="Paste the URL here...")
-
-voices_dict = {
-    "Asteria (English - US, Female)": "aura-asteria-en",
-    "Luna (English - US, Female)": "aura-luna-en",
-    "Stella (English - US, Female)": "aura-stella-en",
-    "Athena (English - UK, Female)": "aura-athena-en",
-    "Hera (English - US, Female)": "aura-hera-en",
-    "Orion (English - US, Male)": "aura-orion-en",
-    "Arcas (English - US, Male)": "aura-arcas-en",
-    "Perseus (English - US, Male)": "aura-perseus-en",
-    "Angus (English - Ireland, Male)": "aura-angus-en",
-    "Orpheus (English - US, Male)": "aura-orpheus-en",
-    "Helios (English - UK, Male)": "aura-helios-en",
-    "Zeus (English - US, Male)": "aura-zeus-en",
-}
-
-voices = list(voices_dict.keys())
-
-with st.expander("Voice Options"):
-    col1, col2 = st.columns(2)
-    with col1:
-        voice_1 = st.selectbox("Speaker 1", voices, index=6)
-    with col2:
-        voice_2 = st.selectbox("Speaker 2", voices, index=2)
-
-convert_button = st.button(
-    "Narrate it", help="Click to convert the URL into an audio file"
+st.set_page_config(
+    page_title="NarrateLink",
+    page_icon="🔊",
+    layout="wide",
+    initial_sidebar_state="expanded",
 )
 
-if convert_button and url:
-    with st.spinner("Converting article to audio... Please wait."):
+
+@dataclass
+class ConversationConfig:
+    max_words: int = 15000
+    prefix_url: str = "https://r.jina.ai/"
+    model_name: str = "grok-2-1212"
+
+
+if "audio_file" not in st.session_state:
+    st.session_state.audio_file = None
+
+with st.sidebar:
+    st.image("https://img.icons8.com/clouds/100/000000/podcast.png", width=100)
+    st.title("Settings")
+
+    st.subheader("🎤 Voice Settings")
+    voices_dict = {
+        "Asteria (English - US, Female)": "aura-asteria-en",
+        "Luna (English - US, Female)": "aura-luna-en",
+        "Stella (English - US, Female)": "aura-stella-en",
+        "Athena (English - UK, Female)": "aura-athena-en",
+        "Hera (English - US, Female)": "aura-hera-en",
+        "Orion (English - US, Male)": "aura-orion-en",
+        "Arcas (English - US, Male)": "aura-arcas-en",
+        "Perseus (English - US, Male)": "aura-perseus-en",
+        "Angus (English - Ireland, Male)": "aura-angus-en",
+        "Orpheus (English - US, Male)": "aura-orpheus-en",
+        "Helios (English - UK, Male)": "aura-helios-en",
+        "Zeus (English - US, Male)": "aura-zeus-en",
+    }
+
+    voices = list(voices_dict.keys())
+
+    voice_1 = st.selectbox("Speaker 1", voices, index=7)
+    voice_2 = st.selectbox("Speaker 2", voices, index=0)
+
+
+st.title("🎧 NarrateLink")
+st.caption("Transform articles into engaging podcasts instantly")
+
+url_container = st.container()
+with url_container:
+    url = st.text_input(
+        "Enter Article URL",
+        placeholder="https://example.com/article",
+        help="Paste the URL of the article you want to convert",
+    )
+
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col2:
+        convert_button = st.button(
+            "🎵 Generate Podcast", use_container_width=True, type="primary"
+        )
+
+
+if convert_button:
+    if not url:
+        st.error("⚠️ Please enter a URL to continue")
+    else:
         try:
-            audio_file = converter.url_to_audio(
-                url, voices_dict[voice_2], voices_dict[voice_1]
-            )
-            audio_file_path = f"./{audio_file}"
-            st.success("Conversion completed successfully!")
-
-            st.audio(audio_file_path, format="audio/wav")
-            with st.expander("Tap to See Conversation"):
-                for entry in converter.conversation_out["conversation"]:
-                    st.write(f"**{entry['speaker']}**: {entry['text']}")
-                st.json(converter.conversation_out,expanded=False)
-            st.download_button(
-                label="Download Audio File",
-                data=open(audio_file_path, "rb"),
-                file_name=audio_file,
-                mime="audio/wav",
-                help="Download the converted audio file",
-            )
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
-            st.markdown(
-                    """
-                    ### Encountering issues?
-                    If there are any errors, please try using [Podcastify](https://huggingface.co/spaces/eswardivi/Podcastify) for an alternative solution.
-                    """
+            with st.status("🎙️ Creating your podcast...", expanded=True) as status:
+                llm_api_key = st.secrets["X_API_KEY"]
+                dg_api_key = st.secrets["DG_API_KEY"]
+                config = ConversationConfig(
+                    max_words=15000,
+                    prefix_url="https://r.jina.ai/",
+                    model_name="grok-2-1212",
                 )
-else:
-    if convert_button:
-        st.error("Please enter a valid URL.")
+                converter = URLToAudioConverter(config, llm_api_key, dg_api_key)
 
+                status.update(label="Converting to audio...", state="running")
+                audio_file = converter.url_to_audio(
+                    url, voices_dict[voice_2], voices_dict[voice_1]
+                )
+
+                status.update(label="✅ Conversion complete!", state="complete")
+
+            st.success("🎉 Your podcast is ready!")
+
+            st.subheader("🎧 Listen Now")
+            st.audio(f"./{audio_file}", format="audio/wav")
+
+            col1, col2, col3 = st.columns([1, 1, 1])
+            with col2:
+                st.download_button(
+                    label="⬇️ Download Podcast",
+                    data=open(f"./{audio_file}", "rb"),
+                    file_name=audio_file,
+                    mime="audio/wav",
+                    use_container_width=True,
+                )
+
+            with st.expander("📝 View Transcript"):
+                for entry in converter.llm_out["conversation"]:
+                    st.markdown(f"**{entry['speaker']}**  \n{entry['text']}")
+
+        except Exception as e:
+            st.error(f"😕 Oops! Something went wrong: {str(e)}")
+            st.info("🔄 Try refreshing the page or using a different URL")
+
+st.divider()
 st.markdown(
     """
-    ### Looking for a fully open-source and on-device solution?
-    Try out [Podcastify](https://huggingface.co/spaces/eswardivi/Podcastify)! 
-    It's another app by me that lets you convert articles to podcasts right on your device. No external APIs, just pure open-source goodness!
-    """
-)
-
-st.info(
-    "Powered by Groq and Deepgram APIs. URLs are parsed by https://r.jina.ai/. Ensure your URLs are accessible and point to text-rich content for best results."
-)
-st.info(
-    "Note: If the article exceeds 5000 words, it will be truncated to ensure optimal performance and manageability."
+    <div style='text-align: center'>
+        <p>Want a secure, private text-to-speech solution? Check out 
+        <a href='https://huggingface.co/spaces/eswardivi/Podcastify'>Podcastify</a> 
+        </p>
+        the open-source alternative that runs entirely on your device.
+    </div>
+    """,
+    unsafe_allow_html=True,
 )
