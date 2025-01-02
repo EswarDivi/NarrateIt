@@ -3,6 +3,7 @@ openai
 edge-tts==7.0.0
 streamlit
 python-dotenv
+deepgram-sdk
 logfire
 logfire[requests]
 logfire[httpx]
