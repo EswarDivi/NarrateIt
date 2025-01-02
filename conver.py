@@ -16,13 +16,13 @@ from pathlib import Path
 class ConversationConfig:
     max_words: int = 3000
     prefix_url: str = "https://r.jina.ai/"
-    model_name: str = "grok-2-1212"
+    model_name: str = "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
 
 
 class URLToAudioConverter:
     def __init__(self, config: ConversationConfig, llm_api_key: str, dg_api_key: str):
         self.config = config
-        self.llm_client = OpenAI(api_key=llm_api_key, base_url="https://api.x.ai/v1")
+        self.llm_client = OpenAI(api_key=llm_api_key, base_url="https://api.together.xyz/v1")
         self.deepgram_client = DeepgramClient(api_key=dg_api_key)
         self.llm_out= None
         self._setup_logging()

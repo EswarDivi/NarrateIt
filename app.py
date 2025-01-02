@@ -15,7 +15,7 @@ st.set_page_config(
 class ConversationConfig:
     max_words: int = 15000
     prefix_url: str = "https://r.jina.ai/"
-    model_name: str = "grok-2-1212"
+    model_name: str = "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo"
 
 
 if "audio_file" not in st.session_state:
@@ -71,7 +71,7 @@ if convert_button:
     else:
         try:
             with st.status("🎙️ Creating your podcast...", expanded=True) as status:
-                llm_api_key = st.secrets["X_API_KEY"]
+                llm_api_key = st.secrets["TOGETHER_API_KEY"]
                 dg_api_key = st.secrets["DG_API_KEY"]
                 config = ConversationConfig(
                     max_words=15000,
