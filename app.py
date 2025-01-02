@@ -76,7 +76,7 @@ if convert_button:
                 config = ConversationConfig(
                     max_words=15000,
                     prefix_url="https://r.jina.ai/",
-                    model_name="grok-2-1212",
+                    model_name="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
                 )
                 converter = URLToAudioConverter(config, llm_api_key, dg_api_key)
 
